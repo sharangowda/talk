@@ -1,5 +1,4 @@
-import { useEffect, useState } from "react";
-//import { useRouter } from 'next/navigation'
+import { useState } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
   Card,
@@ -14,6 +13,7 @@ import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import getAuth from "@/utils/getAuth";
 import createUser from "@/utils/createUser";
+import { useToast } from "@/hooks/use-toast";
 
 export function AuthPageComponent() {
   type createData = {
@@ -27,6 +27,7 @@ export function AuthPageComponent() {
 
   const [isLoading, setIsLoading] = useState<boolean>(false);
   //const router = useRouter();
+  const { toast } = useToast();
 
   async function onSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -46,20 +47,34 @@ export function AuthPageComponent() {
       emailVisibilty: true,
     };
 
-    console.log(isSignUp);
     if (isSignUp) {
       try {
         await createUser(data);
-      } catch (e) {
-        alert(e);
+        toast({
+          title: "Your Account Is Now Created.",
+          description: "Please log in to access your account.",
+        });
+      } catch {
+        toast({
+          title: "Account Not Created",
+          description: "Please enter all fields to create your account.",
+        });
       }
     } else {
       try {
         const response = await getAuth(email, password);
-        setIsLoading(response);
-        alert("Logged In");
-      } catch (e) {
-        alert(e);
+        if (response) {
+          toast({
+            title: "Welcome",
+            description: "You are now logged in :)",
+          });
+        }
+      } catch {
+        toast({
+          title: "Check Credentials",
+          description:
+            "Either your E-mail ID or Password is wrong. Please Check and Try Again.",
+        });
       }
     }
     setIsLoading(false);
@@ -75,7 +90,7 @@ export function AuthPageComponent() {
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <Tabs className="w-full">
+          <Tabs defaultValue="sign-in" className="w-full">
             <TabsList className="grid w-full grid-cols-2">
               <TabsTrigger value="sign-in">Sign In</TabsTrigger>
               <TabsTrigger value="sign-up">Sign Up</TabsTrigger>
