@@ -12,3 +12,7 @@ function App() {
 }
 
 export default App;
+
+//todo:
+//add routes
+//hash passwords and store hashed passwords in db
