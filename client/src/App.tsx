@@ -1,12 +1,10 @@
 import "./App.css";
-import { AuthPageComponent } from "@/components/auth-page";
-import { Toaster } from "@/components/ui/toaster";
+import { HomePage } from "./pages/home";
 
 function App() {
   return (
     <>
-      <AuthPageComponent />
-      <Toaster />
+      <HomePage />
     </>
   );
 }
