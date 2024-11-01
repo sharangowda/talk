@@ -1,7 +1,13 @@
+import Layout from "./layout";
+
 export default function ProfilePage() {
   return (
     <>
-      <h1>Profile Page</h1>
+      <Layout children={<ProfileCard />} />
     </>
   );
+}
+
+function ProfileCard() {
+  return <>Profile 1</>;
 }

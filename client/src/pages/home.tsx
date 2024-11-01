@@ -1,7 +1,14 @@
+import { ModeToggle } from "@/components/mode-toggle";
+import Layout from "./layout";
+
 export function HomePage() {
   return (
     <>
-      <h1>Home Page</h1>
+      <Layout children={<Home />} />
     </>
   );
+}
+
+function Home() {
+  return <>Home</>;
 }
