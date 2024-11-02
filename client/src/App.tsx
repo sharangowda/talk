@@ -15,4 +15,4 @@ export default App;
 //add routes (completed)
 //hash passwords and store hashed passwords in db (will start while working on backend and socketIO)
 //add kan ban to homepage
-//dark theme (completen)
+//dark theme (completed)
