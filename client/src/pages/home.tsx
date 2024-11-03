@@ -13,6 +13,10 @@ export function HomePage() {
   );
 }
 
+const onChangeHandler = (event: React.FormEvent<HTMLInputElement>) => {
+  console.log(event.currentTarget.value);
+};
+
 function Home() {
   interface objects {
     value: string;
@@ -31,20 +35,22 @@ function Home() {
           Add to Board
         </div>
         <Separator className="my-2" orientation="horizontal" />
-        <div className="lg:flex lg:mt-3 lg:justify-between">
-          <Input
-            className="mt-1 mb-3 pr-32 lg:mt-0 lg:mr-3 lg:w-96 lg:pr-40"
-            placeholder="Add work"
-          />
-          <SelectFunction selectProps={selectProps} />
-          <Button className="mt-3 w-32 lg:w-96 lg:mt-0 lg:ml-3">Add</Button>
-        </div>
+        <form>
+          <div className="lg:flex lg:mt-3 lg:justify-between">
+            <Input
+              className="mt-1 mb-3 pr-32 lg:mt-0 lg:mr-3 lg:w-96 lg:pr-40"
+              placeholder="Add work"
+              id="work"
+              name="work"
+              onChange={onChangeHandler}
+            />
+            <SelectFunction selectProps={selectProps} />
+            <Button className="mt-3 w-32 lg:w-96 lg:mt-0 lg:ml-3">Add</Button>
+          </div>
+        </form>
+        <Separator className="mt-2 mb-6" orientation="horizontal" />
       </div>
-      <Separator
-        className="mb-4 ml-10 mx-auto lg:ml-28"
-        orientation="horizontal"
-      />
-      <div className="flex ml-10 lg:ml-28">
+      <div className="flex ml-10 gap-4 lg:ml-28">
         <KanbanBoard />
       </div>
     </>
