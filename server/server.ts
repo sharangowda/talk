@@ -1,15 +1,13 @@
 import express from "express";
 import { createServer } from "http";
 import { Server } from "socket.io";
+import * as path from "path";
 
 const app = express();
-const httpServer = createServer(app);
-const io = new Server(httpServer, {});
+const dirPath = path.join(__dirname, "./public");
 
-io.on("connection", (socket) => {
-  console.log(socket);
-});
+app.use(express.static(dirPath));
 
-httpServer.listen(3000, () => {
-  console.log("Server started on port 3000");
+app.listen(3000, () => {
+  console.log("check port 3000");
 });
