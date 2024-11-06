@@ -4,6 +4,7 @@ import { Separator } from "@/components/ui/separator";
 import { Button } from "@/components/ui/button";
 import SelectFunction from "@/components/custom-select-component";
 import KanbanBoard from "@/components/kanban-board";
+import React, { useState } from "react";
 
 export function HomePage() {
   return (
@@ -13,11 +14,17 @@ export function HomePage() {
   );
 }
 
-const onChangeHandler = (event: React.FormEvent<HTMLInputElement>) => {
-  console.log(event.currentTarget.value);
-};
-
 function Home() {
+  const [title, setTitle] = useState<string>();
+
+  const onChangeHandler = (event: React.FormEvent<HTMLInputElement>) => {
+    setTitle(event.currentTarget.value);
+  };
+
+  const clickHandler = (e: React.MouseEvent) => {
+    e.preventDefault();
+    console.log(title);
+  };
   interface objects {
     value: string;
     text: string;
@@ -45,7 +52,12 @@ function Home() {
               onChange={onChangeHandler}
             />
             <SelectFunction selectProps={selectProps} />
-            <Button className="mt-3 w-32 lg:w-96 lg:mt-0 lg:ml-3">Add</Button>
+            <Button
+              onClick={clickHandler}
+              className="mt-3 w-32 lg:w-96 lg:mt-0 lg:ml-3"
+            >
+              Add
+            </Button>
           </div>
         </form>
         <Separator className="mt-2 mb-6" orientation="horizontal" />
