@@ -9,7 +9,7 @@ import React, { useState } from "react";
 export function HomePage() {
   return (
     <>
-      <Layout children={<Home />} />
+      <Layout children={<Home />} title={"Add To Board"} />
     </>
   );
 }
@@ -38,10 +38,6 @@ function Home() {
   return (
     <>
       <div className="flex flex-col ml-10 lg:ml-28">
-        <div className="text-2xl lg:text-4xl lg:font-extrabold lg:mb-2">
-          Add to Board
-        </div>
-        <Separator className="my-2" orientation="horizontal" />
         <form>
           <div className="lg:flex lg:mt-3 lg:justify-between">
             <Input

@@ -80,5 +80,5 @@ createRoot(document.getElementById("root")!).render(
     <ThemeProvider defaultTheme="dark" storageKey="vite-ui-key">
       <RouterProvider router={router} />
     </ThemeProvider>
-  </StrictMode>,
+  </StrictMode>
 );
