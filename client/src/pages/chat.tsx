@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import React, { FormEvent, useEffect, useState } from "react";
 import Layout from "./layout";
 import { io } from "socket.io-client";
 import {
@@ -9,6 +9,10 @@ import {
 import { RxClipboardCopy } from "react-icons/rx";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
+import { Input } from "@/components/ui/input";
+import { Separator } from "@/components/ui/separator";
+import { User } from "@/types";
+import { socket } from "@/socket";
 
 export default function ChatPage() {
   return (
@@ -20,7 +24,13 @@ export default function ChatPage() {
 
 function Chat() {
   const [id, setID] = useState<string | undefined>("");
+  const [username, setUsername] = useState<string>("");
+  const [room, setRoom] = useState<string>("");
   const { toast } = useToast();
+  socket.connect();
+  socket.on("connect", () => {
+    setID(socket.id);
+  });
 
   const handleCopyClick = async () => {
     try {
@@ -34,32 +44,53 @@ function Chat() {
       alert("Copy to clipboard failed.");
     }
   };
-  useEffect(() => {
-    const socket = io("http://localhost:3000");
 
-    const connection = socket.connect();
-    connection.on("connect", () => {
-      setID(connection.id);
-    });
+  const handleUserInput = (event: React.FormEvent<HTMLInputElement>) => {
+    setUsername(event.currentTarget.value);
+  };
 
-    return () => {
-      socket.disconnect();
+  const handleRoomInput = (event: React.FormEvent<HTMLInputElement>) => {
+    setRoom(event.currentTarget.value);
+  };
+
+  const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
+    const user: User = {
+      username: username,
+      roomId: room,
     };
-  }, []);
+    socket.emit("join", room);
+    e.preventDefault();
+  };
   return (
     <>
       <div className="ml-10 mt-8 lg:ml-28">
-        <HoverCard>
-          <HoverCardTrigger>Your Session ID</HoverCardTrigger>
-          <HoverCardContent className="w-[300px] h-[60px]" side="right">
-            <div className="flex justify-between">
-              <p className="">{id}</p>
-              <Button className="h-[25px] w-[20px]" onClick={handleCopyClick}>
-                <RxClipboardCopy />
-              </Button>
-            </div>
-          </HoverCardContent>
-        </HoverCard>
+        <div>
+          <HoverCard>
+            <HoverCardTrigger>Your Session ID</HoverCardTrigger>
+            <HoverCardContent className="w-[300px] h-[60px]" side="right">
+              <div className="flex justify-between">
+                <p className="">{id}</p>
+                <Button className="h-[25px] w-[20px]" onClick={handleCopyClick}>
+                  <RxClipboardCopy />
+                </Button>
+              </div>
+            </HoverCardContent>
+          </HoverCard>
+        </div>
+        <Separator className="my-4" orientation="horizontal" />
+        <div className="flex gap-5">
+          <Input
+            onChange={handleUserInput}
+            autoComplete="false"
+            placeholder="Username"
+          />
+          <Input
+            onChange={handleRoomInput}
+            autoComplete="false"
+            placeholder="Room ID"
+          />
+          <Button onClick={handleSubmit}>Join</Button>
+        </div>
       </div>
     </>
   );

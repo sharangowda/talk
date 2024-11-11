@@ -9,3 +9,8 @@ export type Tasks = {
   content: string;
   status: string;
 };
+
+export type User = {
+  username: string;
+  roomId: string;
+};

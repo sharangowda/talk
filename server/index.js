@@ -22,6 +22,10 @@ io.on("connection", (socket) => {
     console.log(args);
   });
 
+  socket.on("join", (data) => {
+    console.log(`Join req from ${socket.id} to ${data}`);
+  });
+
   socket.on("disconnect", () => {
     console.log(`${socket.id} disconnected`);
   });
