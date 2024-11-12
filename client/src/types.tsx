@@ -10,7 +10,10 @@ export type Tasks = {
   status: string;
 };
 
-export type User = {
+export type Body = {
   username: string;
   roomId: string;
+  message: string;
+  hour: number;
+  minutes: number;
 };

@@ -2,6 +2,7 @@ const express = require("express");
 const { createServer } = require("http");
 const cors = require("cors");
 const { Server } = require("socket.io");
+const crypto = require("crypto");
 
 const app = express();
 app.use(cors());
@@ -18,12 +19,14 @@ const io = new Server(server, {
 io.on("connection", (socket) => {
   console.log(`${socket.id} connected`);
 
-  socket.on("hell", (args) => {
-    console.log(args);
+  socket.on("join", (data) => {
+    socket.join(data);
+    console.log(`Join req from ${socket.id} to ${data}`);
   });
 
-  socket.on("join", (data) => {
-    console.log(`Join req from ${socket.id} to ${data}`);
+  socket.on("message", (data) => {
+    // console.log(data);
+    socket.to(data.roomId).emit("receive", data.message);
   });
 
   socket.on("disconnect", () => {
