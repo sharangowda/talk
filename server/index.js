@@ -2,7 +2,6 @@ const express = require("express");
 const { createServer } = require("http");
 const cors = require("cors");
 const { Server } = require("socket.io");
-const crypto = require("crypto");
 
 const app = express();
 app.use(cors());
@@ -26,7 +25,7 @@ io.on("connection", (socket) => {
 
   socket.on("message", (data) => {
     // console.log(data);
-    socket.to(data.roomId).emit("receive", data.message);
+    socket.to(data.roomId).emit("receive", data);
   });
 
   socket.on("disconnect", () => {

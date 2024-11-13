@@ -1,0 +1,11 @@
+todos:
+1. auth (done)
+2. create basic UI layouts (done)
+3. Add routes (done)
+4. KB board (WIP)
+5. Chats with socket.IO (done)
+6. Add calender eg: google calender kinda UI
+7. Add audio and video call using webRTC (optional)
+8. Fix sidebar profile components (URGENT)
+9. Add functionality to calender to mark dates and stuff (optional)
+10. DEPLOY

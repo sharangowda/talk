@@ -29,6 +29,7 @@ function Chat() {
   const [username, setUsername] = useState<string>("");
   const [room, setRoom] = useState<string>("");
   const [message, setMessage] = useState<string>("");
+  const [messageList, setMessageList] = useState<Body[]>([]);
 
   const { toast } = useToast();
   socket.connect();
@@ -77,12 +78,13 @@ function Chat() {
     };
     if (message !== "") {
       await socket.emit("message", body);
+      setMessageList((list) => [...list, body]);
     }
   };
 
   useEffect(() => {
     socket.on("receive", (data) => {
-      console.log(data);
+      setMessageList((list) => [...list, data]);
     });
   }, [socket]);
   return (
@@ -127,13 +129,42 @@ function Chat() {
           <div>
             <div>
               <ScrollArea className="h-[500px] w-[330px] rounded-md border p-4 lg:w-[750px] lg:h-[700px]">
-                Jokester began sneaking into the castle in the middle of the
-                night and leaving jokes all over the place: under the king's
-                pillow, in his soup, even in the royal toilet. The king was
-                furious, but he couldn't seem to stop Jokester. And then, one
-                day, the people of the kingdom discovered that the jokes left by
-                Jokester were so funny that they couldn't help but laugh. And
-                once they started laughing, they couldn't stop.
+                {messageList.map((content) => {
+                  return (
+                    <div className={`mt-2 flex-col`}>
+                      <div
+                        className={`flex ${
+                          content.username === username
+                            ? "justify-end"
+                            : "justify-start"
+                        } items-start`}
+                      >
+                        <p
+                          className={`rounded-sm px-3 py-2 text-white max-w-max ${
+                            content.username === username
+                              ? "bg-blue-800"
+                              : "bg-green-800"
+                          }`}
+                          id={content.username === username ? "you" : "other"}
+                        >
+                          {content.message}
+                        </p>
+                      </div>
+                      <div
+                        className={`flex ${
+                          content.username === username
+                            ? "justify-end"
+                            : "justify-start"
+                        } items-start`}
+                      >
+                        <div className="flex gap-x-2 mt-1">
+                          <p className="text-xs">{content.username}</p>
+                          <p className="text-xs">{`${content.hour}:${content.minutes}`}</p>
+                        </div>
+                      </div>
+                    </div>
+                  );
+                })}
               </ScrollArea>
             </div>
             <div className="flex gap-2 mt-3 lg:mt-4">
