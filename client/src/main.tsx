@@ -13,7 +13,6 @@ import Login from "./pages/login.tsx";
 import NotFound from "./pages/404.tsx";
 import pb from "./lib/client.tsx";
 import { HomePage } from "./pages/home.tsx";
-import Calender from "./pages/calender.tsx";
 import { ThemeProvider } from "./components/theme-provider.tsx";
 
 function reqAuth() {
@@ -51,16 +50,6 @@ const router = createBrowserRouter([
         throw redirect("/");
       }
       return <Login />;
-    },
-  },
-  {
-    path: "/calender",
-    element: <Calender />,
-    loader: () => {
-      if (!pb.authStore.isValid) {
-        throw redirect("/auth");
-      }
-      return <Calender />;
     },
   },
   {

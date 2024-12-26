@@ -3,7 +3,7 @@ import Layout from "./layout";
 export default function ProfilePage() {
   return (
     <>
-      <Layout children={<ProfileCard />} />
+      <Layout title="Profile" children={<ProfileCard />} />
     </>
   );
 }

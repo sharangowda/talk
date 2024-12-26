@@ -44,14 +44,6 @@ export function AppSidebar() {
                   </Link>
                 </SidebarMenuButton>
               </SidebarMenuItem>
-              <SidebarMenuItem key={3}>
-                <SidebarMenuButton asChild>
-                  <Link to={"/calender"}>
-                    <Calendar />
-                    <span>Calender</span>
-                  </Link>
-                </SidebarMenuButton>
-              </SidebarMenuItem>
             </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>
