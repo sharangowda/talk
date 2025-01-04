@@ -7,7 +7,6 @@ import {
 } from "@/components/ui/hover-card";
 import { VscSend } from "react-icons/vsc";
 import { Button } from "@/components/ui/button";
-import { useToast } from "@/hooks/use-toast";
 import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
 import { ScrollArea } from "@/components/ui/scroll-area";
