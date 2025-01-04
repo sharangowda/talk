@@ -5,7 +5,6 @@ import {
   HoverCardContent,
   HoverCardTrigger,
 } from "@/components/ui/hover-card";
-import { RxClipboardCopy } from "react-icons/rx";
 import { VscSend } from "react-icons/vsc";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
@@ -31,26 +30,26 @@ function Chat() {
   const [message, setMessage] = useState<string>("");
   const [messageList, setMessageList] = useState<Body[]>([]);
 
-  const { toast } = useToast();
+  // const { toast } = useToast();
   socket.connect();
   socket.on("connect", () => {
     setID(socket.id);
   });
 
-  const handleCopyClick = async () => {
-    try {
-      await window.navigator.clipboard.writeText(id?.substring(0, 9));
-      toast({
-        title: "Copied",
-        description: `${id?.substring(0, 9)}`,
-      });
-    } catch (err) {
-      toast({
-        title: "Failed to copy content.",
-        description: `${err}`,
-      });
-    }
-  };
+  // const handleCopyClick = async () => {
+  //   try {
+  //     await window.navigator.clipboard.writeText(id?.substring(0, 9));
+  //     toast({
+  //       title: "Copied",
+  //       description: `${id?.substring(0, 9)}`,
+  //     });
+  //   } catch (err) {
+  //     toast({
+  //       title: "Failed to copy content.",
+  //       description: `${err}`,
+  //     });
+  //   }
+  // };
 
   const handleUserInput = (event: React.FormEvent<HTMLInputElement>) => {
     setUsername(event.currentTarget.value);
@@ -114,12 +113,12 @@ function Chat() {
               >
                 <div className="flex justify-between">
                   <p className="">{id?.substring(0, 9)}</p>
-                  <Button
+                  {/* <Button
                     className="h-[25px] w-[20px]"
                     onClick={handleCopyClick}
                   >
                     <RxClipboardCopy />
-                  </Button>
+                  </Button> */}
                 </div>
               </HoverCardContent>
             </HoverCard>

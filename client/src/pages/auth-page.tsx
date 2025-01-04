@@ -14,7 +14,6 @@ import { Button } from "@/components/ui/button";
 import getAuth from "@/utils/getAuth";
 import createUser from "@/utils/createUser";
 import { useToast } from "@/hooks/use-toast";
-import { Github, Mail } from "lucide-react";
 
 export function AuthPageComponent() {
   type createData = {
@@ -97,7 +96,7 @@ export function AuthPageComponent() {
             </TabsList>
             <form onSubmit={onSubmit}>
               <TabsContent value="sign-in">
-                <CardContent className="flex flex-col space-y-4">
+                {/* <CardContent className="flex flex-col space-y-4">
                   <Button variant="outline" className="w-full">
                     <Mail className="mr-2 h-4 w-4" />
                     Sign in with Google
@@ -106,7 +105,7 @@ export function AuthPageComponent() {
                     <Github className="mr-2 h-4 w-4" />
                     Sign in with GitHub
                   </Button>
-                </CardContent>
+                </CardContent> */}
                 <input type="hidden" name="authType" value="sign-in" />
                 <div className="space-y-4">
                   <div className="space-y-2">
@@ -132,7 +131,7 @@ export function AuthPageComponent() {
               </TabsContent>
               <TabsContent value="sign-up">
                 <input type="hidden" name="authType" value="sign-up" />
-                <CardContent className="flex flex-col space-y-4">
+                {/* <CardContent className="flex flex-col space-y-4">
                   <Button variant="outline" className="w-full">
                     <Mail className="mr-2 h-4 w-4" />
                     Sign up with Google
@@ -141,7 +140,7 @@ export function AuthPageComponent() {
                     <Github className="mr-2 h-4 w-4" />
                     Sign up with GitHub
                   </Button>
-                </CardContent>
+                </CardContent> */}
                 <div className="space-y-4">
                   <div className="space-y-2">
                     <Label htmlFor="name">Name</Label>

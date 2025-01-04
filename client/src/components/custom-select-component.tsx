@@ -1,4 +1,3 @@
-import { ReactEventHandler, useState } from "react";
 import {
   Select,
   SelectContent,
@@ -14,13 +13,9 @@ interface objects {
 
 export default function SelectFunction({
   selectProps,
-  picktodo,
 }: {
   selectProps: Array<objects>;
-  picktodo: (data: string | undefined) => void;
 }) {
-  const [option, setOption] = useState<string | undefined>("");
-  picktodo(option);
   return (
     <Select>
       <SelectTrigger>

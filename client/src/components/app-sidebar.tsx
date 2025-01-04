@@ -1,4 +1,4 @@
-import { Calendar, ChevronUp, Home, Inbox, User2 } from "lucide-react";
+import { ChevronUp, Home, Inbox } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 import {
@@ -19,6 +19,14 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@radix-ui/react-dropdown-menu";
+import { Button } from "./ui/button";
+import { PiSignOutBold } from "react-icons/pi";
+import pb from "@/lib/client";
+
+function signOut() {
+  pb.authStore.clear();
+  window.location.reload();
+}
 
 export function AppSidebar() {
   return (
@@ -32,7 +40,7 @@ export function AppSidebar() {
                 <SidebarMenuButton asChild>
                   <Link to={"/"}>
                     <Home />
-                    <span>Home</span>
+                    <span>KanBan Board</span>
                   </Link>
                 </SidebarMenuButton>
               </SidebarMenuItem>
@@ -58,7 +66,7 @@ export function AppSidebar() {
                     <AvatarImage src="https://github.com/shadcn.png" />
                     <AvatarFallback>CN</AvatarFallback>
                   </Avatar>
-                  Username
+                  Your Profile
                   <ChevronUp className="ml-auto" />
                 </SidebarMenuButton>
               </DropdownMenuTrigger>
@@ -67,13 +75,10 @@ export function AppSidebar() {
                 className="w-[--radix-popper-anchor-width]"
               >
                 <DropdownMenuItem>
-                  <span>Profile</span>
-                </DropdownMenuItem>
-                <DropdownMenuItem>
-                  <span>Dark Theme</span>
-                </DropdownMenuItem>
-                <DropdownMenuItem>
-                  <span>Sign out</span>
+                  <Button className="w-full h-8" onClick={signOut}>
+                    <PiSignOutBold />
+                    Sign Out
+                  </Button>
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
