@@ -21,6 +21,7 @@ io.on("connection", (socket) => {
   socket.on("join", (data) => {
     socket.join(data);
     console.log(`Join req from ${socket.id} to ${data}`);
+    socket.broadcast.to(data).emit("user-join", socket.id);
   });
 
   socket.on("message", (data) => {
