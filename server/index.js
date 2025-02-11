@@ -7,6 +7,7 @@ const app = express();
 app.use(cors());
 
 const server = createServer(app);
+let acceptCall = "";
 
 const io = new Server(server, {
   cors: {
@@ -22,6 +23,17 @@ io.on("connection", (socket) => {
     socket.join(data);
     console.log(`Join req from ${socket.id} to ${data}`);
     socket.broadcast.to(data).emit("user-join", socket.id);
+  });
+
+  socket.on("call-user", (data) => {
+    const { id, offer } = data;
+    acceptCall = socket.id;
+    socket.to(id).emit("incoming-call", { from: id, offer });
+  });
+
+  socket.on("call-accepted", (data) => {
+    const { id, ans } = data;
+    socket.to(acceptCall).emit("call-accepted", { ans });
   });
 
   socket.on("message", (data) => {

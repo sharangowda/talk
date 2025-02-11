@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import Layout from "./layout";
 import {
   HoverCard,
@@ -12,6 +12,7 @@ import { Separator } from "@/components/ui/separator";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Body } from "@/types";
 import { socket } from "@/socket";
+import ReactPlayer from "react-player";
 
 export default function ChatPage() {
   return (
@@ -28,6 +29,9 @@ function Chat() {
   const [room, setRoom] = useState<string>("");
   const [message, setMessage] = useState<string>("");
   const [messageList, setMessageList] = useState<Body[]>([]);
+  const [sourceStream, setSourceStream] = useState<MediaStream>();
+  const [remoteStream, setRemoteStream] = useState<MediaStream>();
+  const [remoteId, setRemoteId] = useState<string>("");
 
   // const { toast } = useToast();
   socket.connect();
@@ -80,16 +84,120 @@ function Chat() {
     }
   };
 
-  const handleNewUser = (data: { data: string }) => {
-    console.log(`user ${data} joined.`);
+  const createConnection = () => {
+    const configuration = {
+      iceServers: [{ urls: "stun:stun.l.google.com:19302" }],
+    };
+    const connection = new RTCPeerConnection(configuration);
+    return connection;
   };
+
+  const sourceConnection = createConnection();
+  const remoteConnection = createConnection();
+
+  const sourceCall = async () => {
+    // const configuration = {
+    //   iceServers: [{ urls: "stun:stun.l.google.com:19302" }],
+    // };
+    // const peerConnection = new RTCPeerConnection(configuration);
+    const offer = await sourceConnection.createOffer();
+    await sourceConnection.setLocalDescription(offer);
+    return offer;
+  };
+
+  const remoteCall = async (offer: RTCSessionDescriptionInit) => {
+    // const configuration = {
+    //   iceServers: [{ urls: "stun:stun.l.google.com:19302" }],
+    // };
+    // const remoteConnection = new RTCPeerConnection(configuration);
+    remoteConnection.setRemoteDescription(offer);
+    const answer = await remoteConnection.createAnswer();
+    await remoteConnection.setLocalDescription(answer);
+    return answer;
+  };
+
+  const handleNewUser = useCallback(
+    async (id: React.SetStateAction<string>) => {
+      console.log(`user ${id} joined.`);
+      const offer = await sourceCall();
+      socket.emit("call-user", { id, offer });
+      setRemoteId(id);
+    },
+    [sourceCall, socket]
+  );
+
+  const handleIncomingCall = useCallback(
+    async (data: { from: any; offer: any }) => {
+      const { from, offer } = data;
+      console.log(offer);
+      const ans = await remoteCall(offer);
+      socket.emit("call-accepted", { id: from, ans });
+      setRemoteId(from);
+    },
+    [remoteCall, socket]
+  );
+
+  const handleCallAccepted = async (data: { ans: any }) => {
+    const { ans } = data;
+    console.log(`call got accepted ${ans}`);
+    await sourceConnection.setRemoteDescription(ans);
+  };
+
+  const sendStream = async (stream: MediaStream) => {
+    const tracks = stream.getTracks();
+    for (const track of tracks) {
+      sourceConnection.addTrack(track, stream);
+    }
+  };
+
+  const getUserMediaStream = useCallback(async () => {
+    const stream = await navigator.mediaDevices.getUserMedia({
+      audio: true,
+      video: true,
+    });
+    // sendStream(stream);
+    setSourceStream(stream);
+  }, []);
+
+  const handleTrackEvent = useCallback((event: { streams: any }) => {
+    const streams = event.streams;
+    setRemoteStream(streams[0]);
+  }, []);
+
+  const handleNego = useCallback(() => {
+    const localOffer = remoteConnection.localDescription;
+    socket.emit("call-user", { id: remoteId, offer: localOffer });
+  }, []);
 
   useEffect(() => {
     socket.on("user-join", handleNewUser);
+    socket.on("incoming-call", handleIncomingCall);
+    socket.on("call-accepted", handleCallAccepted);
+
+    sourceConnection.addEventListener("track", handleTrackEvent);
+    sourceConnection.addEventListener("negotiationneeded", handleNego);
+
     socket.on("receive", (data) => {
       setMessageList((list) => [...list, data]);
     });
-  }, [socket]);
+    return () => {
+      socket.off("user-join", handleNewUser);
+      socket.off("incoming-call", handleIncomingCall);
+      socket.off("call-accepted", handleCallAccepted);
+      sourceConnection.removeEventListener("track", handleTrackEvent);
+      sourceConnection.removeEventListener("negotiationneeded", handleNego);
+    };
+  }, [
+    socket,
+    handleNewUser,
+    handleIncomingCall,
+    handleCallAccepted,
+    sourceConnection,
+  ]);
+
+  useEffect(() => {
+    getUserMediaStream();
+  }, [getUserMediaStream]);
 
   return (
     <>
@@ -127,19 +235,17 @@ function Chat() {
                 </div>
               </HoverCardContent>
             </HoverCard>
-            <Button>Start Video Call</Button>
+            <Button
+              onClick={(_event) => {
+                sendStream(sourceStream);
+              }}
+            >
+              Start Video Call
+            </Button>
           </div>
           <div className="gap-y-5">
-            <video
-              className="bg-white w-[550px] h-[300px] mb-3"
-              autoPlay
-              playsInline
-            />
-            <video
-              className="bg-white w-[550px] h-[300px] mt-2"
-              autoPlay
-              playsInline
-            />
+            <ReactPlayer url={sourceStream} playing />
+            <ReactPlayer url={remoteStream} playing />
           </div>
         </div>
         <div>
