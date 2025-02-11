@@ -80,11 +80,17 @@ function Chat() {
     }
   };
 
+  const handleNewUser = (data: { data: string }) => {
+    console.log(`user ${data} joined.`);
+  };
+
   useEffect(() => {
+    socket.on("user-join", handleNewUser);
     socket.on("receive", (data) => {
       setMessageList((list) => [...list, data]);
     });
   }, [socket]);
+
   return (
     <>
       <div className="ml-10 mt-8 mr-10 lg:ml-28 lg:flex lg: justify-between lg:w-full">
@@ -103,7 +109,7 @@ function Chat() {
             />
             <Button onClick={handleRoomSubmit}>Join</Button>
           </div>
-          <div className="flex my-6">
+          <div className="flex my-6 gap-x-10">
             <HoverCard>
               <HoverCardTrigger>Get Private Room ID</HoverCardTrigger>
               <HoverCardContent
@@ -121,6 +127,19 @@ function Chat() {
                 </div>
               </HoverCardContent>
             </HoverCard>
+            <Button>Start Video Call</Button>
+          </div>
+          <div className="gap-y-5">
+            <video
+              className="bg-white w-[550px] h-[300px] mb-3"
+              autoPlay
+              playsInline
+            />
+            <video
+              className="bg-white w-[550px] h-[300px] mt-2"
+              autoPlay
+              playsInline
+            />
           </div>
         </div>
         <div>

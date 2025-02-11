@@ -36,17 +36,17 @@ export function AppSidebar() {
           <SidebarGroupLabel>Application</SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
-              <SidebarMenuItem key={1}>
+              {/* <SidebarMenuItem key={1}>
                 <SidebarMenuButton asChild>
                   <Link to={"/"}>
                     <Home />
                     <span>KanBan Board</span>
                   </Link>
                 </SidebarMenuButton>
-              </SidebarMenuItem>
+              </SidebarMenuItem> */}
               <SidebarMenuItem key={2}>
                 <SidebarMenuButton asChild>
-                  <Link to={"/chat"}>
+                  <Link to={"/"}>
                     <Inbox />
                     <span>Inbox</span>
                   </Link>
