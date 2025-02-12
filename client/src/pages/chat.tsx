@@ -92,27 +92,19 @@ function Chat() {
     return connection;
   };
 
-  const sourceConnection = createConnection();
-  const remoteConnection = createConnection();
+  const peer = createConnection();
+  // const remoteConnection = createConnection();
 
   const sourceCall = async () => {
-    // const configuration = {
-    //   iceServers: [{ urls: "stun:stun.l.google.com:19302" }],
-    // };
-    // const peerConnection = new RTCPeerConnection(configuration);
-    const offer = await sourceConnection.createOffer();
-    await sourceConnection.setLocalDescription(offer);
+    const offer = await peer.createOffer();
+    await peer.setLocalDescription(offer);
     return offer;
   };
 
   const remoteCall = async (offer: RTCSessionDescriptionInit) => {
-    // const configuration = {
-    //   iceServers: [{ urls: "stun:stun.l.google.com:19302" }],
-    // };
-    // const remoteConnection = new RTCPeerConnection(configuration);
-    remoteConnection.setRemoteDescription(offer);
-    const answer = await remoteConnection.createAnswer();
-    await remoteConnection.setLocalDescription(answer);
+    peer.setRemoteDescription(offer);
+    const answer = await peer.createAnswer();
+    await peer.setLocalDescription(answer);
     return answer;
   };
 
@@ -137,16 +129,15 @@ function Chat() {
     [remoteCall, socket]
   );
 
-  const handleCallAccepted = async (data: { ans: any }) => {
-    const { ans } = data;
-    console.log(`call got accepted ${ans}`);
-    await sourceConnection.setRemoteDescription(ans);
+  const handleCallAccepted = async (ans: RTCSessionDescriptionInit) => {
+    console.log(ans);
+    await peer.setRemoteDescription(ans); // fix this line
   };
 
   const sendStream = async (stream: MediaStream) => {
     const tracks = stream.getTracks();
     for (const track of tracks) {
-      sourceConnection.addTrack(track, stream);
+      peer.addTrack(track, stream);
     }
   };
 
@@ -155,7 +146,7 @@ function Chat() {
       audio: true,
       video: true,
     });
-    // sendStream(stream);
+    sendStream(stream);
     setSourceStream(stream);
   }, []);
 
@@ -165,7 +156,7 @@ function Chat() {
   }, []);
 
   const handleNego = useCallback(() => {
-    const localOffer = remoteConnection.localDescription;
+    const localOffer = peer.localDescription;
     socket.emit("call-user", { id: remoteId, offer: localOffer });
   }, []);
 
@@ -174,8 +165,8 @@ function Chat() {
     socket.on("incoming-call", handleIncomingCall);
     socket.on("call-accepted", handleCallAccepted);
 
-    sourceConnection.addEventListener("track", handleTrackEvent);
-    sourceConnection.addEventListener("negotiationneeded", handleNego);
+    peer.addEventListener("track", handleTrackEvent);
+    peer.addEventListener("negotiationneeded", handleNego);
 
     socket.on("receive", (data) => {
       setMessageList((list) => [...list, data]);
@@ -184,16 +175,10 @@ function Chat() {
       socket.off("user-join", handleNewUser);
       socket.off("incoming-call", handleIncomingCall);
       socket.off("call-accepted", handleCallAccepted);
-      sourceConnection.removeEventListener("track", handleTrackEvent);
-      sourceConnection.removeEventListener("negotiationneeded", handleNego);
+      peer.removeEventListener("track", handleTrackEvent);
+      peer.removeEventListener("negotiationneeded", handleNego);
     };
-  }, [
-    socket,
-    handleNewUser,
-    handleIncomingCall,
-    handleCallAccepted,
-    sourceConnection,
-  ]);
+  }, [socket, handleNewUser, handleIncomingCall, handleCallAccepted, peer]);
 
   useEffect(() => {
     getUserMediaStream();
@@ -235,13 +220,13 @@ function Chat() {
                 </div>
               </HoverCardContent>
             </HoverCard>
-            <Button
+            {/* <Button
               onClick={(_event) => {
                 sendStream(sourceStream);
               }}
             >
               Start Video Call
-            </Button>
+            </Button> */}
           </div>
           <div className="gap-y-5">
             <ReactPlayer url={sourceStream} playing />
